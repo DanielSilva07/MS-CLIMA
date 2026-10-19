@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS-CLIMA | Alertas ODS 13</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2b6cb0;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        p {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .badge {
+            display: inline-block;
+            background: #e6fffa;
+            color: #234e52;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+        button {
+            width: 100%;
+            background: #3182ce;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #2b6cb0;
+        }
+        #mensagem {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .footer {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 20px;
+            border-top: 1px solid #edf2f7;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="badge">🌍 ODS 13 - Ação contra o Clima</div>
+    <h1>Alertas Climáticos</h1>
+    <p>Cadastre-se para receber boletins e avisos meteorológicos diretamente no seu e-mail.</p>
+
+    <form id="formInscricao">
+        <div class="form-group">
+            <label for="nome">Seu Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: Daniel Silva" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Seu E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="regiao">Sua Região:</label>
+            <input type="text" id="regiao" name="regiao" placeholder="Ex: Rio de Janeiro" required>
+        </div>
+
+        <button type="submit">Cadastrar e Receber Alerta</button>
+    </form>
+
+    <div id="mensagem"></div>
+
+    <div class="footer">
+        © 2026 Daniel Silva Code Lab
+    </div>
+</div>
+
+<script>
+    document.getElementById('formInscricao').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const regiao = document.getElementById('regiao').value;
+        const msgDiv = document.getElementById('mensagem');
+
+        msgDiv.style.color = '#3182ce';
+        msgDiv.textContent = 'Cadastrando e enviando e-mail...';
+
+        try {
+            const response = await fetch('/api/v1/alertas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome, email, regiao })
+            });
+
+            if (response.ok) {
+                msgDiv.style.color = '#38a169';
+                msgDiv.textContent = '✨ Cadastro realizado com sucesso! Verifique seu e-mail.';
+                document.getElementById('formInscricao').reset();
+            } else {
+                msgDiv.style.color = '#e53e3e';
+                msgDiv.textContent = '❌ Erro ao realizar o cadastro. Tente novamente.';
+            }
+        } catch (error) {
+            msgDiv.style.color = '#e53e3e';
+            msgDiv.textContent = '❌ Erro de conexão com o servidor.';
+        }
+    });
+</script>
+
+</body>
+</html>

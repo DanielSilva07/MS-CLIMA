@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres-clima:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    container_name: postgres_clima_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_clima:/var/lib/postgresql/data
+    networks:
+      - rede-ods13
+
+  ms-clima:
+    build: .
+    container_name: microservice_clima
+    ports:
+      - "${SERVER_PORT:-9090}:${SERVER_PORT:-9090}"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://postgres-clima:5432/${POSTGRES_DB}
+    depends_on:
+      postgres-clima:
+        condition: service_healthy
+    networks:
+      - rede-ods13
+
+volumes:
+  pgdata_clima:
+
+networks:
+  rede-ods13:
+    driver: bridge
