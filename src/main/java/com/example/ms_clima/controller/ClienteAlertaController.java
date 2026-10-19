@@ -1,5 +1,4 @@
 package com.example.ms_clima.controller;
-
 import com.example.ms_clima.model.ClienteAlertaModel;
 import com.example.ms_clima.repository.ClienteAlertaRepository;
 import com.example.ms_clima.service.EmailClientService;
