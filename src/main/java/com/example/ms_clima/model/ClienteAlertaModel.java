@@ -20,5 +20,4 @@ public class ClienteAlertaModel {
     private String regiao;
     private String subject;
     private String text;
-
 }
